@@ -50,11 +50,11 @@ func (a *Application) FinishedDateTime() time.Time {
 	return time.Unix(a.FinishedTime, 0)
 }
 
-// Component permit to get Component item
-// It return Component if found
-// It return nil if service Component not found
+// Applications permit to get all application that match the given filters
+// It return the list of Application if found
+// It return empty list if not found
 // It return error if something wrong when API call
-func (c *YarnClient) Applications(filters map[string]string) (*Applications, error) {
+func (c *YarnClient) Applications(filters map[string]string) ([]Application, error) {
 
 	log.Debug("Filters: ", filters)
 
@@ -68,7 +68,7 @@ func (c *YarnClient) Applications(filters map[string]string) (*Applications, err
 		if resp.StatusCode() == 404 {
 			return nil, nil
 		} else {
-			return nil, NewAmbariError(resp.StatusCode(), resp.Status())
+			return nil, NewYarnError(resp.StatusCode(), resp.Status())
 		}
 	}
 	applications := &Applications{}
@@ -78,5 +78,5 @@ func (c *YarnClient) Applications(filters map[string]string) (*Applications, err
 	}
 	log.Debugf("Return applications: %s", applications)
 
-	return applications, nil
+	return applications.Applications, nil
 }

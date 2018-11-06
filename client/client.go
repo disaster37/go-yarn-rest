@@ -20,7 +20,7 @@ func New(baseUrl string, login string, password string) *YarnClient {
 	}
 
 	if login != "" && password != "" {
-		client.SetBasicAuth(login, password)
+		client.client.SetBasicAuth(login, password)
 	}
 
 	return client
