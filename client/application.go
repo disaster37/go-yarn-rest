@@ -11,9 +11,14 @@ import (
 )
 
 type Applications struct {
-	Applications []Application `json:"apps"`
+	Applications *Application `json:"apps"`
 }
+
 type Application struct {
+	ApplicationInfos []ApplicationInfo `json:"app"`
+}
+
+type ApplicationInfo struct {
 	Id              string `json:"id,omitempty"`
 	User            string `json:"user,omitempty"`
 	Name            string `json:"name,omitempty"`
@@ -30,7 +35,7 @@ type Application struct {
 }
 
 // String permit to return Application as Json string
-func (a *Application) String() string {
+func (a *ApplicationInfo) String() string {
 	json, _ := json.Marshal(a)
 	return string(json)
 }
@@ -42,12 +47,12 @@ func (a *Applications) String() string {
 }
 
 // StartedDateTime return StartedTime as time.Time
-func (a *Application) StartedDateTime() time.Time {
+func (a *ApplicationInfo) StartedDateTime() time.Time {
 	return time.Unix(0, a.StartedTime*1000)
 }
 
 // FinishedDateTime return FinishedTime as time.Time
-func (a *Application) FinishedDateTime() time.Time {
+func (a *ApplicationInfo) FinishedDateTime() time.Time {
 	return time.Unix(0, a.FinishedTime*1000)
 }
 
@@ -55,7 +60,7 @@ func (a *Application) FinishedDateTime() time.Time {
 // It return the list of Application if found
 // It return empty list if not found
 // It return error if something wrong when API call
-func (c *YarnClient) Applications(filters map[string]string) ([]Application, error) {
+func (c *YarnClient) Applications(filters map[string]string) ([]ApplicationInfo, error) {
 
 	log.Debug("Filters: ", filters)
 
@@ -79,5 +84,5 @@ func (c *YarnClient) Applications(filters map[string]string) ([]Application, err
 	}
 	log.Debugf("Return applications: %s", applications)
 
-	return applications.Applications, nil
+	return applications.Applications.ApplicationInfos, nil
 }
