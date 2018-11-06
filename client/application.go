@@ -84,5 +84,10 @@ func (c *YarnClient) Applications(filters map[string]string) ([]ApplicationInfo,
 	}
 	log.Debugf("Return applications: %s", applications)
 
-	return applications.Applications.ApplicationInfos, nil
+	if applications.Applications == nil {
+		return make([]ApplicationInfo, 0, 0), nil
+	} else {
+		return applications.Applications.ApplicationInfos, nil
+	}
+
 }
