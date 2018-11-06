@@ -19,19 +19,19 @@ type Application struct {
 }
 
 type ApplicationInfo struct {
-	Id              string `json:"id,omitempty"`
-	User            string `json:"user,omitempty"`
-	Name            string `json:"name,omitempty"`
-	Queue           string `json:"queue,omitempty"`
-	State           string `json:"state,omitempty"`
-	FinalStatus     string `json:"finalStatus,omitempty"`
-	Progess         int    `json:"progress,omitempty"`
-	TrackingUI      string `json:"trackingUI,omitempty"`
-	TrackingUrl     string `json:"trackingUrl,omitempty"`
-	ApplicationType string `json:"applicationType,omitempty"`
-	StartedTime     int64  `json:"startedTime,omitempty"`
-	FinishedTime    int64  `json:"finishedTime,omitempty"`
-	Diagnostics     string `json:"diagnostics,omitempty"`
+	Id              string  `json:"id,omitempty"`
+	User            string  `json:"user,omitempty"`
+	Name            string  `json:"name,omitempty"`
+	Queue           string  `json:"queue,omitempty"`
+	State           string  `json:"state,omitempty"`
+	FinalStatus     string  `json:"finalStatus,omitempty"`
+	Progess         float64 `json:"progress,omitempty"`
+	TrackingUI      string  `json:"trackingUI,omitempty"`
+	TrackingUrl     string  `json:"trackingUrl,omitempty"`
+	ApplicationType string  `json:"applicationType,omitempty"`
+	StartedTime     int64   `json:"startedTime,omitempty"`
+	FinishedTime    int64   `json:"finishedTime,omitempty"`
+	Diagnostics     string  `json:"diagnostics,omitempty"`
 }
 
 // String permit to return Application as Json string
@@ -48,12 +48,12 @@ func (a *Applications) String() string {
 
 // StartedDateTime return StartedTime as time.Time
 func (a *ApplicationInfo) StartedDateTime() time.Time {
-	return time.Unix(0, a.StartedTime*1000)
+	return time.Unix(0, a.StartedTime*1000000)
 }
 
 // FinishedDateTime return FinishedTime as time.Time
 func (a *ApplicationInfo) FinishedDateTime() time.Time {
-	return time.Unix(0, a.FinishedTime*1000)
+	return time.Unix(0, a.FinishedTime*1000000)
 }
 
 // Applications permit to get all application that match the given filters
