@@ -43,12 +43,12 @@ func (a *Applications) String() string {
 
 // StartedDateTime return StartedTime as time.Time
 func (a *Application) StartedDateTime() time.Time {
-	return time.Unix(0, a.StartedTime*time.Nanosecond)
+	return time.Unix(0, a.StartedTime*1000)
 }
 
 // FinishedDateTime return FinishedTime as time.Time
 func (a *Application) FinishedDateTime() time.Time {
-	return time.Unix(0, a.FinishedTime*time.Nanosecond)
+	return time.Unix(0, a.FinishedTime*1000)
 }
 
 // Applications permit to get all application that match the given filters
