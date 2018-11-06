@@ -11,7 +11,7 @@ import (
 )
 
 type Applications struct {
-	Applications []Application `json:"app"`
+	Applications []Application `json:"apps"`
 }
 type Application struct {
 	Id              string `json:"id,omitempty"`
@@ -26,6 +26,7 @@ type Application struct {
 	ApplicationType string `json:"applicationType,omitempty"`
 	StartedTime     int64  `json:"startedTime,omitempty"`
 	FinishedTime    int64  `json:"finishedTime,omitempty"`
+	Diagnostics     string `json:"diagnostics,omitempty"`
 }
 
 // String permit to return Application as Json string
@@ -42,12 +43,12 @@ func (a *Applications) String() string {
 
 // StartedDateTime return StartedTime as time.Time
 func (a *Application) StartedDateTime() time.Time {
-	return time.Unix(a.StartedTime, 0)
+	return time.Unix(0, a.StartedTime*time.Nanosecond)
 }
 
 // FinishedDateTime return FinishedTime as time.Time
 func (a *Application) FinishedDateTime() time.Time {
-	return time.Unix(a.FinishedTime, 0)
+	return time.Unix(0, a.FinishedTime*time.Nanosecond)
 }
 
 // Applications permit to get all application that match the given filters
