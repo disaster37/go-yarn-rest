@@ -7,6 +7,9 @@ import (
 	"encoding/json"
 	"fmt"
 	log "github.com/sirupsen/logrus"
+	"regexp"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -29,6 +32,7 @@ type ApplicationInfo struct {
 	TrackingUI      string  `json:"trackingUI,omitempty"`
 	TrackingUrl     string  `json:"trackingUrl,omitempty"`
 	ApplicationType string  `json:"applicationType,omitempty"`
+	ApplicationTags string  `json:"applicationTags,omitempty"`
 	StartedTime     int64   `json:"startedTime,omitempty"`
 	FinishedTime    int64   `json:"finishedTime,omitempty"`
 	Diagnostics     string  `json:"diagnostics,omitempty"`
@@ -54,6 +58,30 @@ func (a *ApplicationInfo) StartedDateTime() time.Time {
 // FinishedDateTime return FinishedTime as time.Time
 func (a *ApplicationInfo) FinishedDateTime() time.Time {
 	return time.Unix(0, a.FinishedTime*1000000)
+}
+
+// Split string tag as map
+func (a *ApplicationInfo) Tags() map[string]string {
+
+	r, err := regexp.Compile(`([^\s:]+)\s*:\s*([^\s]+)\s*`)
+	if err != nil {
+		panic(err)
+	}
+
+	tags := map[string]string{}
+	if a.ApplicationTags != "" {
+		splitTags := strings.Split(a.ApplicationTags, ",")
+		for i, splitTag := range splitTags {
+			matchs := r.FindStringSubmatch(splitTag)
+			if matchs == nil {
+				tags[strconv.Itoa(i)] = strings.TrimSpace(splitTag)
+			} else {
+				tags[matchs[1]] = matchs[2]
+			}
+		}
+	}
+
+	return tags
 }
 
 // Applications permit to get all application that match the given filters

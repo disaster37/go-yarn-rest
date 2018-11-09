@@ -1,22 +1,22 @@
 package client
 
 import (
+	"github.com/jarcoal/httpmock"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"github.com/jarcoal/httpmock"
 	"time"
 )
 
 func TestApplications(t *testing.T) {
 
 	logrus.SetLevel(logrus.DebugLevel)
-	
+
 	client := New("http://fake.local", "", "")
 	httpmock.ActivateNonDefault(client.Client().GetClient())
-	
+
 	// When no filters
-	fixture := `{"apps":{"app":[{"id":"application_1541145585648_0114","user":"user1","name":"Job.Name","queue":"default","state":"FAILED","finalStatus":"FAILED","trackingUI":"History","trackingUrl":"http://yarn:8088/cluster/app/application_1541145585648_0114","applicationType":"SPARK","startedTime":1541432272828,"finishedTime":1541434233846,"diagnostics":"there are some problems"}]}}`
+	fixture := `{"apps":{"app":[{"id":"application_1541145585648_0114","user":"user1","name":"Job.Name","queue":"default","state":"FAILED","finalStatus":"FAILED","trackingUI":"History","trackingUrl":"http://yarn:8088/cluster/app/application_1541145585648_0114","applicationType":"SPARK", "applicationTags":"name:test, monitoring:true, plop","startedTime":1541432272828,"finishedTime":1541434233846,"diagnostics":"there are some problems"}]}}`
 	responder := httpmock.NewStringResponder(200, fixture)
 	fakeUrl := "http://fake.local/cluster/apps"
 	httpmock.RegisterResponder("GET", fakeUrl, responder)
@@ -36,13 +36,17 @@ func TestApplications(t *testing.T) {
 	assert.Equal(t, time.Unix(0, 1541432272828000000), jobs[0].StartedDateTime())
 	assert.Equal(t, time.Unix(0, 1541434233846000000), jobs[0].FinishedDateTime())
 	assert.Equal(t, "there are some problems", jobs[0].Diagnostics)
-	
+	assert.Equal(t, 3, len(jobs[0].Tags()))
+	assert.Equal(t, "test", jobs[0].Tags()["name"])
+	assert.Equal(t, "true", jobs[0].Tags()["monitoring"])
+	assert.Equal(t, "plop", jobs[0].Tags()["2"])
+
 	// When use filter
-	filters := map[string]string {
-	    "user": "user1",
-	    "queue": "default",
-	    "finishedTimeBegin": "1541432272828000",
-	    "states": "FAILED",
+	filters := map[string]string{
+		"user":              "user1",
+		"queue":             "default",
+		"finishedTimeBegin": "1541432272828000",
+		"states":            "FAILED",
 	}
 	httpmock.Reset()
 	responder = httpmock.NewStringResponder(200, `{"apps":{"app":null}}`)
@@ -50,6 +54,5 @@ func TestApplications(t *testing.T) {
 	jobs, err = client.Applications(filters)
 	assert.NoError(t, err)
 	assert.Equal(t, 0, len(jobs))
-	
 
 }
