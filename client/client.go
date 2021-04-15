@@ -4,7 +4,7 @@ package client
 
 import (
 	"crypto/tls"
-	"github.com/go-resty/resty"
+	"github.com/go-resty/resty/v2"
 )
 
 // Yarn client object
