@@ -1,4 +1,4 @@
-module github.com/disaster37/check-yarn
+module github.com/disaster37/go-yarn-rest
 
 go 1.14
 
